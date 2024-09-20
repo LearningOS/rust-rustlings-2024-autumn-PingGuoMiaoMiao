@@ -1,13 +1,12 @@
-// clippy2.rs
-//
-// Execute `rustlings hint clippy2` or use the `hint` watch subcommand for a
-// hint.
-
 fn main() {
     let mut res = 42;
-    let option = Some(12);
+    let mut option = Some(12);
+    
     while let Some(x) = option {
         res += x;
+        // Set option to None to exit the loop
+        option = None; // or break; if you want to exit immediately
     }
+    
     println!("{}", res);
 }

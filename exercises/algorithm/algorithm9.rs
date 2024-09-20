@@ -3,7 +3,7 @@ use std::default::Default;
 
 pub struct Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     count: usize,
     items: Vec<T>,
@@ -12,7 +12,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -65,12 +65,14 @@ where
 
     fn heapify_up(&mut self, idx: usize) {
         let mut current = idx;
-        let mut parent = self.parent_idx(current);
-
-        while current > 0 && (self.comparator)(&self.items[current], &self.items[parent]) {
-            self.items.swap(current, parent);
-            current = parent;
-            parent = self.parent_idx(current);
+        while current > 0 {
+            let parent = self.parent_idx(current);
+            if (self.comparator)(&self.items[current], &self.items[parent]) {
+                self.items.swap(current, parent);
+                current = parent;
+            } else {
+                break;
+            }
         }
     }
 
@@ -79,7 +81,6 @@ where
 
         while self.children_present(current) {
             let smallest_child = self.smallest_child_idx(current);
-
             if (self.comparator)(&self.items[smallest_child], &self.items[current]) {
                 self.items.swap(smallest_child, current);
                 current = smallest_child;
@@ -92,7 +93,7 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     type Item = T;
 
